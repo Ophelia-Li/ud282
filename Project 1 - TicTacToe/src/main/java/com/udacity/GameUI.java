@@ -152,10 +152,10 @@ public class GameUI extends JPanel {
         //refresh the display to reflect computer's turn if played
         this.repaint();
         //check if game ended again after computer's turn
-        if(game.doChecks()){
-            //if game over no need to continue, so return
-            return;
-        }
+//        if(game.doChecks()){
+//            //if game over no need to continue, so return
+//            return;
+//        }
     }
 
     public void gameOver(String message){
