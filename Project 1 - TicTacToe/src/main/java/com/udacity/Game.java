@@ -112,6 +112,14 @@ public class Game {
      */
     public void nextTurn(){
         //check if single player game, then let computer play turn
+
+        if(turn == 'x'){
+            turn = 'o';
+        }
+        else{
+            turn = 'x';
+        }
+
         if(!twoPlayer){
             if(freeSpots == 0){
                 return ; //bail out if no more free spots
@@ -123,12 +131,12 @@ public class Game {
                 ai_j = (int) (Math.random() * 3);
             }while(grid[ai_i][ai_j] != '-'); //keep trying if this spot was taken
             //update grid with new play, computer is always o
-            grid[ai_i][ai_j] = 'o';
+            grid[ai_i][ai_j] = turn;
             //update free spots
             freeSpots--;
-        }
-        else{
-            //change turns
+
+            doChecks();
+
             if(turn == 'x'){
                 turn = 'o';
             }
@@ -136,6 +144,7 @@ public class Game {
                 turn = 'x';
             }
         }
+
         return;
     }
 
@@ -148,9 +157,54 @@ public class Game {
      * @param grid 2D array of characters representing the game board
      * @return String indicating the outcome of the game: "X wins" or "O wins" or "Tie" or "None"
      */
-    public String checkGameWinner(char [][]grid){
+    public String checkGameWinner(char[][] grid){
         String result = "None";
         //Student code goes here ...
+
+        //diagonal
+        int count = 0;
+        for (int i=0; i<grid.length; i++){
+            char cell = gridAt(i, grid.length-i-1);
+            if (cell == turn){
+                count ++;
+            }
+        }
+        if (count == grid.length) result = turn + " wins: /diagonal";
+
+        //diagonal
+        count = 0;
+        for (int i=0; i<grid.length; i++){
+            char cell = gridAt(i, i);
+            if (cell == turn){
+                count ++;
+            }
+        }
+        if (count == grid.length) result = turn + " wins: \\diagonal";
+
+        //vertical and horizon
+        int oppsiteCount = 0;
+        for (int i=0; i<grid.length; i++){
+            count = 0;
+            oppsiteCount = 0;
+            for (int j=0; j<grid.length; j++) {
+                char cell = gridAt(i, j);
+                char oppsiteCell = gridAt(j, i);
+
+                if (cell == turn) {
+                    count ++;
+                }
+
+                if (oppsiteCell == turn){
+                    oppsiteCount ++;
+                }
+            }
+            if (count == grid.length || oppsiteCount == grid.length) result =  turn + " wins: vertical or horizon";
+        }
+
+        if (freeSpots == 0 && !result.contains("wins")){
+            result = "tie";
+        }
+
         return result;
     }
 
